@@ -1,7 +1,8 @@
-import React, { useRef, FormEvent } from "react";
+import React, { useRef, FormEvent, useState } from "react";
 import { executeQuery } from "./services";
 
 export default function QueryTextArea() {
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const textarea = useRef<HTMLTextAreaElement>(null);
 
   const onSubmit = (event: FormEvent) => {
@@ -9,13 +10,18 @@ export default function QueryTextArea() {
     if (textarea.current) {
       executeQuery(textarea.current.value).then(json => {
         console.log(json);
+        if (json.error_code && typeof json.message === "string") {
+          setErrorMessage(json.message);
+        }
       });
     }
   };
 
   return (
     <form onSubmit={onSubmit}>
+      <p style={{ color: "red" }}>{errorMessage}</p>
       <textarea ref={textarea} name="ksql-query"></textarea>
+      <br />
       <input type="submit" />
     </form>
   );
