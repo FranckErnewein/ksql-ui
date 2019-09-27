@@ -12,6 +12,8 @@ export default function QueryTextArea() {
         console.log(json);
         if (json.error_code && typeof json.message === "string") {
           setErrorMessage(json.message);
+        } else {
+          setErrorMessage(null);
         }
       });
     }

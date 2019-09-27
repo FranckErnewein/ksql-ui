@@ -1,3 +1,18 @@
+## Import psql
+
+```
+rsync -arvz --progress bastion_production:BANKING_PROD . 
+mv BANKING_PROD/ dump-banking
+docker-compose exec banking pg_restore --verbose --clean --if-exists --no-acl --no-owner -h localhost -U me -d banking -j 8 --format=d /data/banking
+```  
+
+## Create psql connector
+
+```
+sh kafka-connect/banking-connector.sh
+```
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
