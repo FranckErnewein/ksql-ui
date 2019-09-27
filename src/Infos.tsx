@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Typography from "@material-ui/core/Typography";
 import { fetchServerInfos, KsqlServerInfo } from "./services";
 
 export default function Infos() {
@@ -11,5 +12,7 @@ export default function Infos() {
   if (!infos) {
     return null;
   }
-  return <div>KSQL version: {infos.version}</div>;
+  return (
+    <Typography variant="caption">KSQL version: {infos.version}</Typography>
+  );
 }

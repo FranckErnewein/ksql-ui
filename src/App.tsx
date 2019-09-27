@@ -1,13 +1,19 @@
 import React from "react";
+import { ThemeProvider } from "@material-ui/styles";
+import Typography from "@material-ui/core/Typography";
+
+import theme from "./theme";
 import Infos from "./Infos";
 import QueryTextArea from "./QueryTextArea";
 
 export default function App() {
   return (
-    <div className="App">
-      <h1>KSQL UI</h1>
-      <Infos />
-      <QueryTextArea />
-    </div>
+    <ThemeProvider theme={theme}>
+      <div className="App">
+        <Typography variant="h4">KSQL UI</Typography>
+        <Infos />
+        <QueryTextArea />
+      </div>
+    </ThemeProvider>
   );
 }

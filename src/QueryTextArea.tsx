@@ -1,30 +1,45 @@
-import React, { useRef, FormEvent, useState } from "react";
+import React, { useState } from "react";
+import AceEditor from "react-ace";
+import CmdSubmit from "./CmdSubmit";
 import { executeQuery } from "./services";
+
+import "brace/mode/mysql";
+import "brace/theme/xcode";
 
 export default function QueryTextArea() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const textarea = useRef<HTMLTextAreaElement>(null);
+  const [query, setQuery] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const onSubmit = (event: FormEvent) => {
-    event.preventDefault();
-    if (textarea.current) {
-      executeQuery(textarea.current.value).then(json => {
-        console.log(json);
-        if (json.error_code && typeof json.message === "string") {
-          setErrorMessage(json.message);
-        } else {
-          setErrorMessage(null);
-        }
-      });
+  const onSubmit = () => {
+    if (query) {
+      setLoading(true);
+      executeQuery(query)
+        .then(json => {
+          console.log(json);
+          if (json.error_code && typeof json.message === "string") {
+            setErrorMessage(json.message);
+          } else {
+            setErrorMessage(null);
+          }
+          setLoading(false);
+        })
+        .catch(() => setLoading(false));
     }
   };
 
   return (
-    <form onSubmit={onSubmit}>
+    <div>
       <p style={{ color: "red" }}>{errorMessage}</p>
-      <textarea ref={textarea} name="ksql-query"></textarea>
+      <AceEditor
+        mode="mysql"
+        theme="xcode"
+        value={query}
+        onChange={q => setQuery(q)}
+        focus
+      />
       <br />
-      <input type="submit" />
-    </form>
+      <CmdSubmit onSubmit={onSubmit} disabled={loading} />
+    </div>
   );
 }
